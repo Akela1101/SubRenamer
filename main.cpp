@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   main.cpp
  * Author: Akela1101
  *
@@ -6,54 +6,46 @@
  */
 
 #include <boost/filesystem.hpp>
-#include <boost/array.hpp>
-
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <set>
-
-#include "../Nya.hpp"
 
 
 using namespace std;
-using namespace boost;
 namespace fs = boost::filesystem;
 
 
-bool CheckExtension(string ext, vector<string> extArray)
-{
-	foreach( const string &s, extArray )
-	{
-		if( ext == s )
-			return true;
-	}
-	return false;
-}
-
 int main(int argc, char* argv[])
 {
-	vector<string> extensionSub = {".srt", ".sub", ".ass", ".ssa"};
-	vector<string> extensionVideo = {".avi", ".mkv", ".wmv", ".mp4"};
+	set<string> extensionSub = { ".srt", ".sub", ".ass", ".ssa" };
+	set<string> extensionVideo = { ".avi", ".mkv", ".wmv", ".mp4" };
 
 	set<fs::path> subs, videos;
-	
-	fs::directory_iterator itr(fs::current_path()), end_itr;
-	foreach( const fs::path &p, make_pair(itr, end_itr) )
+
+	fs::directory_iterator end_it;
+	for( fs::directory_iterator it(fs::current_path()); it != end_it; ++it )
 	{
-		if( CheckExtension(fs::extension(p), extensionSub) )
+        const fs::path &p = *it;
+        
+		if( extensionSub.find(fs::extension(p)) != extensionSub.end() )
 		{
 			subs.insert(p);
 		}
-		else if( CheckExtension(fs::extension(p), extensionVideo) )
+		else if( extensionVideo.find(fs::extension(p)) != extensionVideo.end() )
 		{
 			videos.insert(p);
 		}
 	}
 	
+	if( !videos.size() )
+    {
+        cout << "Try run this program in directory with video & subs." << endl;
+        return 0;
+    }
+
 	if( subs.size() != videos.size() )
 	{
-		cerr << "Numbers are wrong: subs( " << subs.size() << " ), "
+		cerr << "Quantities don't match: subs( " << subs.size() << " ), "
 			<< "videos( " << videos.size() << " )." << endl;
 		return 1;
 	}
@@ -70,9 +62,8 @@ int main(int argc, char* argv[])
 	string reply;
 	cout << endl << "Continue with it? (yes/no): ";
 	cin >> reply;
-	
-	if( reply != "y" && reply != "yes" )
-		return 0;
+
+	if( reply != "y" && reply != "yes" ) return 0;
 
 	for( iterSub = subs.begin(), iterVideo = videos.begin();
 			iterVideo != iterVideoEnd; ++iterSub, ++iterVideo )
@@ -80,7 +71,6 @@ int main(int argc, char* argv[])
 		string newSubName = iterVideo->stem().string() + iterSub->extension().string();
 		fs::rename(*iterSub, fs::path(newSubName));
 	}
-
 	return 0;
 }
 

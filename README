@@ -1,3 +1,11 @@
-Files must be sorted alphabetically.
+Rename subtitle files so they match video files.
 
-Tested in linux. There is possibility it working in windows.
+** Files must be sorted alphabetically.
+
+=== INSTALL ===
+
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
