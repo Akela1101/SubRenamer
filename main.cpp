@@ -15,10 +15,10 @@ using namespace std;
 namespace fs = boost::filesystem;
 
 
-int main(int argc, char* argv[])
+int main()
 {
 	set<string> extensionSub = { ".srt", ".sub", ".ass", ".ssa" };
-	set<string> extensionVideo = { ".avi", ".mkv", ".wmv", ".mp4" };
+	set<string> extensionVideo = { ".avi", ".mkv", ".wmv", ".mp4", "ogg", "mov" };
 
 	set<fs::path> subs, videos;
 
